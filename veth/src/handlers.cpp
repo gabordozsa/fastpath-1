@@ -78,14 +78,20 @@ void handle_raw_input(int raw_fd, int udp_fd, const struct sockaddr_in& peer,
                   << "  ip-src=" << ipsrc << " ip-dst=" << ipdst << " proto=" << (int)iph->protocol << "\n";
     }
 
-    ssize_t sent = sendto(udp_fd,
-                          ip_payload,
-                          static_cast<size_t>(ip_len),
-                          0,
-                          reinterpret_cast<const struct sockaddr*>(&peer),
-                          sizeof(peer));
-    if (sent < 0) {
-        std::cerr << "warn: sendto(udp peer): " << std::strerror(errno) << "\n";
+    while (true) {
+        ssize_t sent = sendto(udp_fd,
+                              ip_payload,
+                              static_cast<size_t>(ip_len),
+                              0,
+                              reinterpret_cast<const struct sockaddr*>(&peer),
+                              sizeof(peer));
+        if(sent >= 0) {
+            break;
+        }
+        if (errno != 11) {
+            std::cerr << "warn: sendto(udp peer): " << std::strerror(errno) << "errno:" << errno << "\n";
+            break;
+        }
     }
 }
 

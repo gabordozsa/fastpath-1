@@ -40,7 +40,7 @@ static void install_signal_handlers()
 int main(int argc, char* argv[])
 {
     Config    cfg = parse_args(argc, argv);
-    RawSocket raw = open_raw_socket("veth1");
+    RawSocket raw = open_raw_socket(cfg.veth_name.empty() ? "veth1" : cfg.veth_name);
     UdpSocket udp = open_udp_socket(cfg.local_port, cfg.peer_ip, cfg.peer_port);
 
     std::cout << "udp-encap ready"

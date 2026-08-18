@@ -30,6 +30,7 @@ static uint16_t parse_port(const char* str, const char* name)
 Config parse_args(int argc, char* argv[])
 {
     static const struct option long_opts[] = {
+        {"veth",    required_argument, nullptr, 'v'},
         {"peer-ip",    required_argument, nullptr, 'i'},
         {"peer-port",  required_argument, nullptr, 'p'},
         {"local-port", required_argument, nullptr, 'l'},
@@ -45,6 +46,9 @@ Config parse_args(int argc, char* argv[])
     int opt;
     while ((opt = getopt_long(argc, argv, "", long_opts, nullptr)) != -1) {
         switch (opt) {
+            case 'v':
+                cfg.veth_name = optarg;
+                break;
             case 'i':
                 cfg.peer_ip = optarg;
                 have_peer_ip = true;
